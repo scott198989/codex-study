@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   title: "AC Circuits Coach",
   description:
     "Interactive study app for Introductory Circuit Analysis chapters 10, 11, 13, 14, 15, 16, and 17.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
