@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
 import { ChapterLab } from "@/components/labs";
 import { chapterOrder, chapterById } from "@/lib/chapters";
@@ -23,6 +24,88 @@ const tabs: { id: TabId; label: string }[] = [
   { id: "lab", label: "Diagram Lab" },
   { id: "calculator", label: "TI Nspire" },
 ];
+
+type ThemeStyle = CSSProperties & Record<`--${string}`, string>;
+
+const chapterThemes: Record<number, ThemeStyle> = {
+  10: {
+    "--hero-start": "#0d9488",
+    "--hero-end": "#2563eb",
+    "--hero-glow": "rgb(13 148 136 / 24%)",
+    "--hero-glow-alt": "rgb(249 115 22 / 24%)",
+    "--accent-strong": "#0d9488",
+    "--accent-cool": "#2563eb",
+    "--accent-warm": "#f97316",
+    "--accent-soft": "#facc15",
+    "--panel-tint": "rgb(240 253 250 / 84%)",
+  },
+  11: {
+    "--hero-start": "#1d4ed8",
+    "--hero-end": "#0891b2",
+    "--hero-glow": "rgb(29 78 216 / 24%)",
+    "--hero-glow-alt": "rgb(34 211 238 / 22%)",
+    "--accent-strong": "#1d4ed8",
+    "--accent-cool": "#0891b2",
+    "--accent-warm": "#f59e0b",
+    "--accent-soft": "#93c5fd",
+    "--panel-tint": "rgb(239 246 255 / 84%)",
+  },
+  13: {
+    "--hero-start": "#f97316",
+    "--hero-end": "#ec4899",
+    "--hero-glow": "rgb(249 115 22 / 24%)",
+    "--hero-glow-alt": "rgb(236 72 153 / 22%)",
+    "--accent-strong": "#f97316",
+    "--accent-cool": "#ec4899",
+    "--accent-warm": "#facc15",
+    "--accent-soft": "#fdba74",
+    "--panel-tint": "rgb(255 247 237 / 84%)",
+  },
+  14: {
+    "--hero-start": "#0f766e",
+    "--hero-end": "#0ea5e9",
+    "--hero-glow": "rgb(15 118 110 / 22%)",
+    "--hero-glow-alt": "rgb(14 165 233 / 22%)",
+    "--accent-strong": "#0f766e",
+    "--accent-cool": "#0ea5e9",
+    "--accent-warm": "#f59e0b",
+    "--accent-soft": "#7dd3fc",
+    "--panel-tint": "rgb(236 254 255 / 84%)",
+  },
+  15: {
+    "--hero-start": "#1d4ed8",
+    "--hero-end": "#fb7185",
+    "--hero-glow": "rgb(29 78 216 / 23%)",
+    "--hero-glow-alt": "rgb(251 113 133 / 22%)",
+    "--accent-strong": "#1d4ed8",
+    "--accent-cool": "#0ea5e9",
+    "--accent-warm": "#fb7185",
+    "--accent-soft": "#fda4af",
+    "--panel-tint": "rgb(239 246 255 / 84%)",
+  },
+  16: {
+    "--hero-start": "#059669",
+    "--hero-end": "#2563eb",
+    "--hero-glow": "rgb(5 150 105 / 23%)",
+    "--hero-glow-alt": "rgb(37 99 235 / 22%)",
+    "--accent-strong": "#059669",
+    "--accent-cool": "#2563eb",
+    "--accent-warm": "#f59e0b",
+    "--accent-soft": "#6ee7b7",
+    "--panel-tint": "rgb(236 253 245 / 84%)",
+  },
+  17: {
+    "--hero-start": "#dc2626",
+    "--hero-end": "#f59e0b",
+    "--hero-glow": "rgb(220 38 38 / 22%)",
+    "--hero-glow-alt": "rgb(245 158 11 / 22%)",
+    "--accent-strong": "#dc2626",
+    "--accent-cool": "#ea580c",
+    "--accent-warm": "#f59e0b",
+    "--accent-soft": "#fdba74",
+    "--panel-tint": "rgb(255 247 237 / 84%)",
+  },
+};
 
 function normalizeAnswer(value: string): string {
   return value
@@ -529,22 +612,60 @@ export function StudyWorkbench() {
   const [chapterId, setChapterId] = useState(chapterOrder[0]);
   const [tab, setTab] = useState<TabId>("learn");
   const chapter = chapterById[chapterId];
+  const activeTab = tabs.find((entry) => entry.id === tab) ?? tabs[0];
+  const practiceCount =
+    chapter.flashcards.length +
+    chapter.quiz.length +
+    chapter.fillBlanks.length +
+    chapter.equationChallenges.length +
+    chapter.calculatorDrills.length;
+  const chapterTheme = chapterThemes[chapterId] ?? chapterThemes[chapterOrder[0]];
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={chapterTheme}>
       <header className="app-header">
-        <div>
+        <div className="hero-copy">
           <p className="eyebrow">AC Circuits Study App</p>
-          <h1>Chapters 10, 11, 13, 14, 15, 16, 17</h1>
+          <h1>Practical prep for the AC circuits chapters that usually eat your time.</h1>
           <p>
-            Built from your textbook scope for simple, practical study. Focus on
-            concept familiarity, equation choice, and calculator confidence.
+            Built around your textbook scope with concise explanations, quick
+            drills, and labs that make the abstract parts feel easier to see.
           </p>
+          <div className="hero-badges">
+            <span className="hero-badge">7 chapters</span>
+            <span className="hero-badge">Interactive labs</span>
+            <span className="hero-badge">Quiz + flashcards + calculator drills</span>
+          </div>
         </div>
+        <aside className="hero-spotlight">
+          <p className="spotlight-label">Active chapter</p>
+          <h2>Chapter {chapter.id}</h2>
+          <strong className="spotlight-title">{chapter.title}</strong>
+          <p>{chapter.subtitle}</p>
+          <div className="hero-stats">
+            <div>
+              <span>Practice items</span>
+              <strong>{practiceCount}</strong>
+            </div>
+            <div>
+              <span>Equations</span>
+              <strong>{chapter.equations.length}</strong>
+            </div>
+            <div>
+              <span>Sections</span>
+              <strong>{chapter.sections.length}</strong>
+            </div>
+          </div>
+        </aside>
       </header>
 
       <main className="app-main">
         <aside className="chapter-rail">
+          <div className="rail-header">
+            <p className="section-kicker">Course map</p>
+            <h2>Pick a chapter</h2>
+            <p>Switch chapters to retint the workspace and keep the same study tools ready.</p>
+          </div>
           {chapterOrder.map((id) => {
             const item = chapterById[id];
             const active = id === chapterId;
@@ -566,6 +687,19 @@ export function StudyWorkbench() {
         </aside>
 
         <section className="work-area" key={`${chapterId}-${tab}`}>
+          <div className="work-area-header">
+            <div>
+              <p className="section-kicker">Current focus</p>
+              <h2>
+                Chapter {chapter.id}: {chapter.title}
+              </h2>
+              <p>{chapter.subtitle}</p>
+            </div>
+            <div className="mode-badge">
+              <span>Mode</span>
+              <strong>{activeTab.label}</strong>
+            </div>
+          </div>
           <div className="tab-row">
             {tabs.map((entry) => (
               <button
