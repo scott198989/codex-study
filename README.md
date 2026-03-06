@@ -47,10 +47,8 @@ npm run build
 
 1. Push this folder to a Git repo.
 2. In Vercel, create a new project and import the repo.
-3. Set the Vercel project root directory to:
-   `ac-circuits-coach`
-4. Keep default Next.js build settings.
-5. Deploy.
+3. Keep default Next.js build settings.
+4. Deploy.
 
 ## Stack
 
